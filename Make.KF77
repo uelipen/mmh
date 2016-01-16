@@ -1,0 +1,9 @@
+# compiler flags for KAPF77 on alphas:
+LDLIBS=-ldxmlp
+ARCHCPP=-D_ALPHA_KAP_BUG  -D_ALPHA
+ALPHAARCH=ev5
+FOPTFLAGS=-g3 -fast -tune $(ALPHAARCH) -fkapargs='-conc -tune=$(ALPHAARCH)'
+FFLAGS=$(FOPTFLAGS) $(FFLAGSB)  $(MPFLAGS)
+ARCHOBJS=decfft.o
+FC=time kf77
+LDFLAGS=-static -r8 -g3

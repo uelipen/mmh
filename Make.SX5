@@ -1,0 +1,7 @@
+ARCHCPP=-D_SX5 -DDYNAMIC_MEMORY
+
+FFLAGSB=-ew -Wf"-pvctl nodivloop fullmsg -L fmtlist transform"  # -P auto 
+ARCHOBJS1=dlarnvect.o
+ARCHOBJS=necfft.o
+LDLIBS=-L /home/vcodes/denise/mhydro/FFT -l fft_64
+FC=f90

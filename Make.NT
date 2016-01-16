@@ -1,0 +1,16 @@
+# compiler flags for Compaq f90 on NT using gnu make:
+LDLIBS=
+FFLAGSB=/real_size:64
+FOPTFLAGS=/optimize:5 /extend_source:132
+ARCHOBJS=genericfft.o sgenericfft.o gfftnoopt.o
+ARCHCPP=-D_NT
+FFLAGS=$(FOPTFLAGS)
+CPP=//d/upen/applicat/cygnus/cygwin-b20/H-i586-cygwin32/lib/gcc-lib/i586-cygwin32/egcs-2.91.57/cpp
+
+.SUFFIXES: .fip .fi .fpp .f .f90 .obj
+
+.f.obj:
+	$(FC) $(FFLAGS) -c $<
+FLD=$(F90)
+OBJS=${OBJS1:.o=.obj}
+OUTFOPT=/exe:

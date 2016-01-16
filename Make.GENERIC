@@ -1,0 +1,6 @@
+# compiler flags for generic compilers:
+LDLIBS=
+FOPTFLAGS= -O
+ARCHOBJS=genericfft.o sgenericfft.o gfftnoopt.o
+FFLAGS=$(FOPTFLAGS) $(FFLAGSB)  $(MPFLAGS)
+

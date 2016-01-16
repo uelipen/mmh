@@ -1,0 +1,2 @@
+      integer ndimproj
+      parameter (ndimproj=2048)

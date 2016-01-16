@@ -1,0 +1,142 @@
+README file for the mhydro cosmological adaptive moving mesh hydro
+package.
+
+Please send me a copy of any scientific papers that use any part of
+this code, and acknowledge its use.  My mailing address is
+
+Ue-Li Pen
+CITA
+60 St George St
+Toronto, ON, M5S 3H8
+Canada
+
+Last updated August 25, 2000, by Ue-Li Pen, pen@cita.utoronto.ca
+
+Most recent update: OpenMP version added by Pengjie Zhang.  Compiles
+fine with SGI f77 7.3, scales up to 64 processors on 256^3 problems,
+or 32 processors for 128^3.
+
+For algorithmic description, see ApJS, 115, 19 (1998)
+or astro-ph/9704258.
+
+0. COPYRIGHT
+
+This code may be used freely for scientific studies, subject to the
+acknowledgement request above.  Parts of this package are taken from
+Ed Bertschinger's P3M system, in particular the generic FFT wrappers
+and the gif file generation.  Please see the copyright notice in file
+genericfft.f for further information.
+
+
+1. INSTALLATION:
+
+the supplied default Makefile compiles on DEC alphas.  Use
+make ARCH={SGI,KF77,GENERIC} for sgi, KAP, and generic compilers
+respectively.  Alternative, use 'setenv ARCH=SGI' and run 'make', or
+edit the makefile.
+
+An FFT is used for the grid limiter.  A standard one is supplied,
+but the specific architectures usually have libraries which are five
+times faster.
+
+You may need custom compilation flags for other architectures.  
+Shared memory parallel machines should all be straightforward for porting.
+
+type 'make run' to compile and run.
+
+the file 'dimen.fh' defines the box size.
+
+file 'COSMOPAR.DAT' sets the cosmological parameters, and uses BBKS
+initial conditions.
+
+
+2. RUN TIME:
+
+The run parameters are specified in file COSMOPAR.DAT
+Compressmax is the grid compression limiter.  Should be a value less than 20.
+The run time is proportional to that value.
+
+All results and checkpoint files during the run are stored in binary
+files ending in '*chk.dat'.  If a run is started in a directory
+containing the file 'state_chk.dat', the program will attempt to
+restart from the last checkpoint.
+
+short overview of the run time output:
+on startup, when on  an SGI ORIGIN series, it may report something
+about the number of processors it thinks the machine has.  This can be
+safely ignored.
+
+each time step the output line contains information of the
+following kind:
+
+---------------------------------------------------------------------------
+ n=1258  t=0.10E+01 tau=  -3.000  a= 0.999 dtau= 0.54E-03 z=   0.001
+ relaxerr=   18.61614690826591
+ cold fraction:         0.0131826401
+cmax=14.47303 rgmin,max= 0.71211E-03  6.45 rhomnx=  0.09 49.17 rms= 0.78
+ compression limiter applied       441484 times
+ cd/c=   2.423185586204515
+ sumenergy:E(particle)/E(gas)=  0.9628812685843670
+ relaxerr=  0.1030576090257583
+ relaxerr=  3.9399170112233151E-02
+ sumenergy:E(particle)/E(gas)=  0.9606656714887565
+ KE= 0.285E+08 TE=  39.3% PE=-0.393E+08 sum=-0.108E+08  L-I w=-0.129E+08
+  alternative sum=-0.108E+08  L-I adotk=-0.133E+08  R= 1.0649
+ relaxerr=   18.30151726380657
+ cold fraction:         0.0131673813
+cmax=14.44167 rgmin,max= 0.71223E-03  6.45 rhomnx=  0.09 49.08 rms= 0.78
+ compression limiter applied       441417 times
+---------------------------------------------------------------------------
+
+'t' is proper time on the scale 0-1
+'tau' is the grid time on scale (-\infty,-3]
+the first 'relaxerr' is the grid deformation multigrid iterator residual.
+	It should be multiplied by dtau to give a dimensionless error estimate.
+        The actual value does not affect any physical quantity.
+'cmax' is the maximal compression ratio (typically a bit larger than
+	'compressmax'/(1+z)).
+'rgmin,max' are the smallest and largest cell volumes, dimensionless
+ 	relative to 1.
+'rhomnx' are the masses in the least and most massive cell
+'... times' are the number of cells which are at least as dense as
+	'compressmax'/(1+z)
+'sumenergy' is the ratio of total particle energy to gas energy.
+the second and third 'relaxerr' are for the gravity solver, and are 
+	dimensionless.  If they get bigger than 1, there is probably
+	a problem.  The multigrid is applied twice, and the second residual
+	should be smaller than the first.
+'KE' is kinetic energy of the gas
+'TE' is thermal energy of gas
+'PE' is potential energy
+'R' is the Layzer-Irvine energy ratio.  Should be near 1.  I think its errors
+	are dominated by low density regions, so modest deviations should
+	not be a problem.
+
+Sometimes some lines are added:
+'cold fraction' is only displayed with the '-DCOLD' compiler option.
+	The fraction of the grid cells which is treated as cold dust.
+'cd/c=' if the grid convergence time is shorter than the sound speed limit.
+
+3. POSTPROCESSING
+
+output processing can be done with various routines in subdirectory
+'POSTPROCESSING'.  
+
+file gasmap.f90 generates an ascii file containing gas mass and
+positions, which can be treated as particles.
+
+File prhopspect.f90 measures the power spectrum of the dark matter,
+and optionally that of the gas density.
+
+the program cluster.f reads the final checkpoint data, and outputs a
+list of clusters (it is only tested to work for z=0).
+
+eulercompare.f extracts a cross section onto a high resolution eulerian
+grid using an inverse mapping procedure.
+
+4. PARALLEL CONSIDERATIONS
+
+when running in parallel, good speedup is only obtained if the number of
+threads requested is smaller than the number of free CPUs on the system.
+If any thread get less than 100% cpu share, the total speed can degrade
+dramatically.

@@ -1,0 +1,33 @@
+c -*- Fortran -*-
+c we put particles on a common block:
+      integer npart, npartcell, nclinear, nmassless, npmassive
+      parameter(nclinear=1,npartcell=nclinear**(3-1/ng1-1/ng2-1/ng3))
+#if defined(_SX5) || defined(_SGI_SOURCE) || defined(_ALPHA)
+      parameter(nmassless=0)
+c massless particles are bad for NUMA memory, unless they are kept
+c local initially, which isnt implemented yet
+#else
+      parameter(nmassless=0*ng1*ng2*ng3)
+c since this is a memory hog, only turn it on if you actually use it
+#endif      
+c the idea is that we put a massless particle randomly in each cell to test
+c for two body relaxation.
+      parameter(npart=npartcell*ng1*ng2*ng3+nmassless)
+      parameter(npmassive=npart-nmassless)
+      real*4 xv(6,npart), pmass(npart)
+cmydist xv(*,block),pmass(block)
+c NOTE: xv is also declared in limitx()      
+      integer hoc(ng1,ng2,ng3+2),ll(npmassive+2*ng1*ng2*nclinear**2)
+cmydist hoc(*,*,block),ll(block)
+c define a couple arrays so we can easily do FFTs:
+      real*4 rhostartup(nclinear*ng3+2,nclinear*ng2,nclinear*ng1)
+     &          ,rhostartsmall(ng3+2,ng2,ng1)
+c we are assuming here that real*4 is not larger than integer
+      equivalence (rhostartup, ll)
+      equivalence (rhostartsmall, hoc)
+      common /chain/ hoc,ll
+      common /particle/ xv, pmass
+#ifdef _SX5      
+      integer ll2(npart), koffset(ng3), icountz(ng3)
+      common /nbodysx6/ ll2, koffset, icountz
+#endif      

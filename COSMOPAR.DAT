@@ -1,0 +1,13 @@
+.37		\Omega_0   This includes \Omega_b !
+.05		\Omega_b
+5		compressmax
+0.7		Hubble H_0=100 h km/s/Mpc  # These parameters are only for IC
+-10		initial redshift
+100		box size in h^{-1} Mpc
+1.0		\sigma_8
+2345 3543 2343 7     ISEED: 0-4095, last element must be odd
+.63            \Omega_\Lambda
+.false.		recut
+10 10 10	cxyz: recut center, 3 integers
+2. 1.5		compression ratio for center and annulus
+0.5		r0: the fraction of the box length which is compressed

@@ -1,0 +1,6 @@
+8/23/97 : added viscosity, introduced option to globally store
+metric.
+
+11/8/97: changed the fft interface, redid the \rho\rg term in
+the deformation equation, put in exact grid limiters, more smoothing
+on grid deformation

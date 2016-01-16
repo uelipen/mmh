@@ -1,0 +1,9 @@
+!
+      real omega0, omegab, compressmax, hubbleh0, redshiftzi, boxsize  &
+    ,sigma8, omegal, rcompress1, rcompress2,rcut0
+      integer  magic, iseed(4), icrecut(3)
+      logical lrecut
+      common /globalpa/ omega0, omegal, omegab, compressmax  &
+          ,rcompress1, rcompress2, rcut0  &
+          ,hubbleh0, redshiftzi, boxsize, sigma8, iseed, magic  &
+          ,icrecut, lrecut

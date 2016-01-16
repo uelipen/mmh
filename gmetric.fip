@@ -1,0 +1,9 @@
+c
+c provides the option of storing a global copy of the inverse metric
+c tensor to save time and coding.
+c
+#ifdef GMETRIC 
+      real gbaj(7,ng1,ng2,ng3) 
+cmydist gbaj(*,*,block,*)
+      common /gmetric/ gbaj
+#endif

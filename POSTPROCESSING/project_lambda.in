@@ -1,0 +1,26 @@
+/scratch/uros/SZ/Output/CDMLambda100_256/szgas.dat
+1 (size rescale) 
+0.8 0.034 (sigma_8, omegabh)
+6515 1 (random number and number of realizations)
+SZlambda/ps_sz_lambdaz4_100_r6515_256_real1.dat (power spectrum output)
+sz_cdml.dat (map output)
+szgas.gif (gif map output)
+4 (maximum redshift of projection)
+1 (thermal SZ)
+
+~juan/Raytrace/SZlambda/szgas.dat
+/scratch/juan/Raytrace/lambda/szgas.dat
+
+/scratch/uros/SZ/Output/CDMLambda512/szgas.dat
+/g1s/uros/PM/Outproj/kappa_o1.0l.0h050sig8_0.6n256s64r1.dat
+0 (weak lensing convergence)
+2 (kinetic SZ)
+3 (Rees-Sciama)
+4 (X ray bolometric)
+
+
+
+
+
+
+

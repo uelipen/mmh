@@ -1,0 +1,11 @@
+# compiler flags for plain ALPHA compilers:
+LDLIBS=-ldxmlp -lnuma
+ARCHCPP= -D_ALPHA
+FOPTFLAGS= -g3 -fast -static -O5 -tune ev67 -arch ev67 # the gs320 chokes if more than 4G of stack
+# needs -i8 for 512^3
+MPFLAGS=-omp -numa #-p
+ARCHOBJS1=
+ARCHOBJS=system.o decfft.o dlarnv.o  cpuid.o # the cxml dlarnv is not reentrant
+FFLAGS=$(FOPTFLAGS) $(FFLAGSB)  $(MPFLAGS)
+LDFLAGS=$(MPFLAGS) 
+

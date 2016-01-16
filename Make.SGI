@@ -1,0 +1,53 @@
+# 12/09/96: SGI only works with gnu make and f90.
+# the f77 chokes on its own directives, and I don't know how to
+# override the compiler in SGI make.
+# these flags attempt maximal optimization at a huge the cost of compile
+# time.  It gains about 10% over a more straightforward optimization.
+# compile time for gauss.f is about 15 minutes.
+# 10/27/97: the -DGMETRIC flag has only neglibible speedup on an
+# origin 2000, but increases memory use by 20%.
+
+# the undef of the cray directives works on gmake on modi4, and on SGI make
+# on hecate.
+# SGI quirk:  on hecate, it can crash if there is no stack limit.
+# setting it to some moderate value, eg 100 MB, fixes the problem.
+FLD=$(F90)
+ARCHOBJS1=
+ARCHRM=*.r
+ARCHCPP=-D_SGI_SOURCE -D_ALPHA_KAP_BUG -Dcdir$$=cc #-Dcmydist=c\$$distribute_reshape
+MPFLAGS=-pfa keep #-mp_schedtype=runtime 
+GOT=-64 -mips4 # -non_shared
+FFLAGSB=-r8 -static -show $(GOT)
+# -g3 crashes the compiler 7.1, 7.2
+# for 7.1, the only combination which works is -r8 -O3 -pfa
+# 7.2 doesnt really work yet.  It gives a segmentation fault on
+# execution
+FOPTFLAGS= -O3 -SWP:body_ins_count_max=0 -SWP:backtracks=10000\
+	-OPT:IEEE_arithmetic=3 -OPT:roundoff=3 -OPT:fold_arith_limit=2000\
+	-WK,-roundoff=3,-ndr,-dr=AK,-limit=20000000,-eiifg=100,-miifg=1000,-arclimit=1000000,-lo=LT
+FOPTFLAGS=-O2 # limiter.f has problems at O3 
+# the SWP doesn't really speed things up that much.
+FOPTLIGHT=-O3 -WK,-roundoff=3,-lo=LT  -OPT:fold_arith_limit=2000#-SWP:body_ins_count_max=0
+FOPTLIGHT=-O3
+MPFLAGS=-mp
+LDFLAGS=$(MPFLAGS) -64
+#FOPTFLAGS=$(FOPTLIGHT)
+FFLAGS=$(FOPTFLAGS) $(FFLAGSB)  $(MPFLAGS)
+#this is much faster to compile, takes only about 2.5 minutes for relaxing.fpp
+FFLAGS2=$(FFLAGSB) $(MPFLAGS) $(FOPTLIGHT)
+
+#FFLAGS=-g -r8
+#FFLAGS2=$(FFLAGS)
+
+
+# this is the fastest, no optimization at all
+FFLAGSCALAR= $(FFLAGSB)
+#FFLAGS=$(FFLAGSB) 
+#FFLAGS2=$(FFLAGSB)
+ARCHOBJS=sgi6machine.o sgifpe_handler.o sgifft.o
+FC=time f77
+CPP=/lib/cpp
+CFLAGS=-g3 -O $(GOT) #-pca keep
+LDLIBS=-lscs_mp #-lfpe # -lcomplib.sgimath_mp  # dont use fpe at high opt
+
+#	/opt/modules/modules/bin/modulecmd ksh swap  MIPSpro.beta72 MIPSpro.71
